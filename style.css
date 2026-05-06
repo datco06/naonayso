@@ -131,7 +131,7 @@ body::after {
 }
 
 .logo-main {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: clamp(60px, 12vw, 120px);
   line-height: 0.9;
   letter-spacing: 4px;
@@ -144,7 +144,7 @@ body::after {
 }
 
 .logo-sub {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: clamp(14px, 3vw, 24px);
   letter-spacing: 6px;
   color: var(--neon);
@@ -181,7 +181,7 @@ body::after {
 }
 
 .editor-title {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: 20px;
   letter-spacing: 3px;
   color: var(--neon);
@@ -415,7 +415,7 @@ input[type="file"] { display: none; }
 }
 
 .game-logo {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: 26px;
   letter-spacing: 3px;
   background: linear-gradient(135deg, var(--neon), var(--gold));
@@ -615,7 +615,7 @@ input[type="file"] { display: none; }
 .reveal-emoji  { font-size: 48px; animation: bounce 0.6s ease-in-out 3; }
 .reveal-label  { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(3,7,30,0.6); font-weight: 700; }
 .reveal-answer {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: clamp(22px, 4vw, 46px);
   letter-spacing: 3px;
   color: var(--dark);
@@ -650,7 +650,7 @@ input[type="file"] { display: none; }
 }
 
 .hint-title {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: 14px;
   letter-spacing: 3px;
   color: var(--neon);
@@ -754,7 +754,7 @@ input[type="file"] { display: none; }
 }
 
 .result-title {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: clamp(40px, 8vw, 80px);
   letter-spacing: 4px;
   background: linear-gradient(135deg, var(--gold), var(--hot));
@@ -784,7 +784,7 @@ input[type="file"] { display: none; }
 }
 
 .stat-val {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: 42px;
   color: var(--neon);
   text-shadow: var(--glow);
@@ -810,7 +810,7 @@ input[type="file"] { display: none; }
 
 /* --- Buttons --- */
 .btn {
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: 16px;
   letter-spacing: 2px;
   border: none;
@@ -999,7 +999,7 @@ input[type="file"] { display: none; }
 /* Leaderboard Screen */
 #screen-leaderboard { padding: 40px 20px; align-items: center; justify-content: flex-start; }
 .lb-header { text-align: center; margin-bottom: 24px; }
-.lb-title { font-family: 'Bebas Neue', cursive; font-size: 48px; color: var(--gold); text-shadow: var(--glow-gold); letter-spacing: 3px; }
+.lb-title { font-family: 'Oswald', sans-serif; font-size: 48px; color: var(--gold); text-shadow: var(--glow-gold); letter-spacing: 3px; }
 .lb-sub { font-size: 16px; color: rgba(255,255,255,0.6); }
 .lb-filters { display: flex; gap: 12px; margin-bottom: 24px; }
 .lb-filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
@@ -1010,7 +1010,7 @@ input[type="file"] { display: none; }
 .lb-table td { padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
 .lb-table tr:last-child td { border-bottom: none; }
 .lb-table tr:hover { background: rgba(255,255,255,0.02); }
-.lb-table td:nth-child(1) { font-family: 'Bebas Neue', cursive; font-size: 24px; color: var(--neon); width: 50px; text-align: center; }
+.lb-table td:nth-child(1) { font-family: 'Oswald', sans-serif; font-size: 24px; color: var(--neon); width: 50px; text-align: center; }
 .lb-table td:nth-child(3) { font-family: 'Space Mono', monospace; color: var(--gold); font-size: 18px; font-weight: bold; }
 .lb-empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); font-style: italic; }
 .lb-actions { display: flex; gap: 16px; margin-top: 30px; }
@@ -1073,7 +1073,7 @@ input[type="file"] { display: none; }
   height: 36px;
   border-radius: 10px;
   margin-right: 14px;
-  font-family: 'Bebas Neue', cursive;
+  font-family: 'Oswald', sans-serif;
   font-size: 22px;
   flex-shrink: 0;
 }
