@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NÃO NẢY SỐ 🧠⚡</title>
+  <meta name="description" content="Trò chơi nhìn hình đoán chữ tốc độ cao — Nhìn hình bí ẩn dần rõ, đoán từ khóa, combo điểm thưởng và leo bảng xếp hạng!" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;700;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast"></div>
+
+  <!-- CONFETTI -->
+  <div class="confetti-container" id="confettiBox"></div>
+
+  <!-- ======================================
+       SCREEN 1: HOME / SETUP
+  ====================================== -->
+  <div id="screen-home" class="screen active">
+
+    <!-- LOGO -->
+    <div class="logo-wrap">
+      <div class="logo-badge">🎮 TRIVIA GAME · CLASS EDITION</div>
+      <div class="logo-main">NÃO NẢY SỐ</div>
+      <div class="logo-sub">⚡ NHÌN NHANH – TAY LẸ – MIỆNG XINH ⚡</div>
+    </div>
+
+    <span class="brain-emoji">🧠</span>
+
+    <p class="home-desc">
+      Đuổi hình bắt chữ tốc độ cao! Hình ảnh sẽ dần rõ theo từng giây.<br />
+      <strong style="color:var(--neon)">Chọn nhanh đáp án đúng</strong> → combo càng cao → ghi điểm càng khủng! 🚀
+    </p>
+
+    <!-- PLAYER NAME -->
+    <div class="editor-card" style="max-width:680px">
+      <div class="editor-title">👤 TÊN NGƯỜI CHƠI / ĐỘI</div>
+      <input
+        class="q-ans-input"
+        id="playerNameInput"
+        placeholder="Nhập tên của bạn hoặc tên đội..."
+        style="font-size:16px; padding:12px 16px;"
+        maxlength="30"
+      />
+    </div>
+
+
+
+    <button class="btn btn-gold" id="btnStart" onclick="startGame()">🚀 BẮT ĐẦU GAME!</button>
+
+    <!-- LEADERBOARD SHORTCUT -->
+    <button class="btn btn-ghost" id="btnLeaderboard" onclick="showScreen('leaderboard')" style="margin-bottom:40px">
+      🏆 Bảng Xếp Hạng
+    </button>
+
+  </div><!-- /screen-home -->
+
+
+  <!-- ======================================
+       SCREEN 2: GAME
+  ====================================== -->
+  <div id="screen-game" class="screen">
+
+    <!-- HEADER -->
+    <div class="game-header">
+      <div class="game-logo">🧠 NÃO NẢY SỐ</div>
+      <div class="q-dots" id="qDots"></div>
+      <div class="game-progress">CÂU <span id="qCurrent">1</span> / <span id="qTotal">5</span></div>
+      <button class="btn-exit" id="btnExit" onclick="exitGame()">✕ Thoát</button>
+    </div>
+
+    <!-- LEVEL & COMBO STRIP -->
+    <div class="game-meta-strip" id="gameMetaStrip">
+      <div class="meta-item">
+        <span class="meta-icon">🎯</span>
+        <span class="meta-label" id="gameLevelLabel">CẤP 1</span>
+      </div>
+      <div class="meta-item combo-item" id="comboItem">
+        <span class="meta-icon">🔥</span>
+        <span class="meta-label">COMBO</span>
+        <span class="combo-count" id="comboCount">×0</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-icon">👤</span>
+        <span class="meta-label" id="gamePlayerName">Người chơi</span>
+      </div>
+    </div>
+
+    <!-- TIME BAR -->
+    <div class="timebar-wrap" id="timebarWrap">
+      <div class="timebar-label" id="timebarLabel">30s</div>
+      <div class="timebar-track">
+        <div class="timebar-fill" id="timebarFill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- ARENA: ảnh trái + thông tin phải -->
+    <div class="game-arena">
+
+      <!-- ẢNH BÍ ẨN -->
+      <div class="img-panel" id="imgPanel">
+        <img id="gameImg" class="game-img blur-20" src="" alt="Hình bí ẩn" style="display:none" />
+        <div class="img-placeholder" id="imgPlaceholder">
+          <span>🖼️</span>
+          <span class="img-placeholder-text">ĐANG TẢI...</span>
+        </div>
+        <!-- OVERLAY ĐÁP ÁN -->
+        <div class="reveal-overlay" id="revealOverlay">
+          <div class="reveal-emoji" id="revealEmoji">🎉</div>
+          <div class="reveal-label">ĐÁP ÁN</div>
+          <div class="reveal-answer" id="revealAnswer">-</div>
+        </div>
+      </div>
+
+      <!-- THÔNG TIN BÊN PHẢI -->
+      <div class="right-panel">
+
+
+
+        <!-- ĐIỂM -->
+        <div class="score-display">
+          <div class="score-icon">🏆</div>
+          <div class="score-info">
+            <div class="score-label">ĐIỂM TÍCH LŨY</div>
+            <div class="score-val" id="scoreVal">0</div>
+          </div>
+          <div style="text-align:right">
+            <div class="score-label">BONUS NHANH</div>
+            <div class="bonus-val" id="bonusVal">+0</div>
+          </div>
+        </div>
+
+        <!-- TRẠNG THÁI -->
+        <div class="status-box">
+          <div id="statusMsg" class="status-msg">
+            ⏳ Hình đang dần rõ... Giơ tay khi biết đáp án!
+          </div>
+        </div>
+
+      </div><!-- /right-panel -->
+    </div><!-- /game-arena -->
+
+    <!-- ĐIỀU KHIỂN TRẮC NGHIỆM -->
+    <div class="mcq-grid" id="mcqGrid">
+      <!-- rendered by JS -->
+    </div>
+
+  </div><!-- /screen-game -->
+
+
+  <!-- ======================================
+       SCREEN 3: KẾT QUẢ
+  ====================================== -->
+  <div id="screen-results" class="screen">
+
+    <div class="result-trophy">🏆</div>
+    <div class="result-title">GAME OVER!</div>
+    <div class="result-subtitle" id="resultSubtitle">Hôm nay cả lớp chiến thật! 🔥</div>
+
+    <div class="result-stats">
+      <div class="stat-card">
+        <div class="stat-val" id="rTotal">0</div>
+        <div class="stat-lab">Tổng câu</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="rCorrect">0</div>
+        <div class="stat-lab">Đúng</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="rScore">0</div>
+        <div class="stat-lab">Điểm</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" id="rMaxCombo">0</div>
+        <div class="stat-lab">Max Combo</div>
+      </div>
+    </div>
+
+    <!-- RANK BADGE -->
+    <div class="rank-badge-result" id="rankBadgeResult"></div>
+
+    <div class="result-actions">
+      <button class="btn btn-neon"  id="btnRestart"     onclick="restartGame()">🔄 Chơi lại</button>
+      <button class="btn btn-gold"  id="btnViewLeaderboard" onclick="showScreen('leaderboard')">🏆 Xem BXH</button>
+      <button class="btn btn-ghost" id="btnGoHome"      onclick="goHome()">🏠 Về trang chủ</button>
+    </div>
+
+  </div><!-- /screen-results -->
+
+
+  <!-- ======================================
+       SCREEN 4: BẢNG XẾP HẠNG
+  ====================================== -->
+  <div id="screen-leaderboard" class="screen">
+
+    <div class="lb-header">
+      <div class="lb-title">🏆 BẢNG XẾP HẠNG</div>
+      <div class="lb-sub">Top 10 người chơi xuất sắc nhất</div>
+    </div>
+
+    <div class="lb-filters">
+      <button class="lb-filter-btn active" id="filterAll"    onclick="filterLeaderboard('all')">🌐 Tất cả</button>
+      <button class="lb-filter-btn"        id="filterToday"  onclick="filterLeaderboard('today')">📅 Hôm nay</button>
+      <button class="lb-filter-btn"        id="filterWeek"   onclick="filterLeaderboard('week')">📆 Tuần này</button>
+    </div>
+
+    <div class="lb-table-wrap">
+      <table class="lb-table" id="lbTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tên</th>
+            <th>Điểm</th>
+            <th>Đúng/Tổng</th>
+            <th>Max Combo</th>
+            <th>Thời gian</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody">
+        </tbody>
+      </table>
+      <div class="lb-empty" id="lbEmpty" style="display:none">
+        Chưa có dữ liệu. Hãy chơi và lưu điểm! 🎮
+      </div>
+    </div>
+
+    <div class="lb-actions">
+      <button class="btn btn-ghost"  id="btnBackHome"   onclick="goHome()">🏠 Về trang chủ</button>
+    </div>
+
+  </div><!-- /screen-leaderboard -->
+
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1098 @@
+/* ============================================================
+   NÃO NẢY SỐ — style.css
+   Cấu trúc:
+   1. CSS Variables & Reset
+   2. Background & Body
+   3. Screens (chuyển màn)
+   4. Screen 1: Home / Setup
+   5. Screen 2: Game
+   6. Screen 3: Kết quả
+   7. Components dùng chung (Button, Toast, Confetti...)
+   8. Animations & Keyframes
+   9. Responsive
+============================================================ */
+
+
+/* ============================================================
+   1. CSS VARIABLES & RESET
+============================================================ */
+:root {
+  --neon:   #00f5d4;
+  --hot:    #ff006e;
+  --gold:   #ffd60a;
+  --purple: #7209b7;
+  --dark:   #03071e;
+  --panel:  #0d1b2a;
+  --card:   #112240;
+
+  --glow:      0 0 20px var(--neon),   0 0 40px rgba(0,245,212,0.3);
+  --glow-hot:  0 0 20px var(--hot),    0 0 40px rgba(255,0,110,0.3);
+  --glow-gold: 0 0 20px var(--gold),   0 0 50px rgba(255,214,10,0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+/* ============================================================
+   2. BACKGROUND & BODY
+============================================================ */
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--dark);
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Gradient glow nền */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(114,9,183,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(0,245,212,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse at 60% 80%, rgba(255,0,110,0.08) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grid lines nền */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,212,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,212,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* ============================================================
+   3. SCREENS (chuyển màn hình)
+============================================================ */
+.screen {
+  display: none;
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hiệu ứng slide-in khi màn hiện ra */
+.screen.active > * {
+  animation: slideInUp 0.5s ease forwards;
+}
+
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ============================================================
+   4. SCREEN 1: HOME / SETUP
+============================================================ */
+#screen-home {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px 20px;
+  gap: 28px;
+}
+
+/* --- Logo --- */
+.logo-wrap {
+  text-align: center;
+}
+
+.logo-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--purple), var(--hot));
+  border-radius: 20px;
+  padding: 6px 20px;
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  box-shadow: var(--glow-hot);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.logo-main {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(60px, 12vw, 120px);
+  line-height: 0.9;
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--neon), var(--gold), var(--hot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(0,245,212,0.5));
+  animation: logoFlicker 4s ease-in-out infinite;
+}
+
+.logo-sub {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(14px, 3vw, 24px);
+  letter-spacing: 6px;
+  color: var(--neon);
+  opacity: 0.7;
+  margin-top: 6px;
+}
+
+/* --- Brain emoji --- */
+.brain-emoji {
+  font-size: 80px;
+  display: block;
+  text-align: center;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+
+/* --- Mô tả --- */
+.home-desc {
+  max-width: 500px;
+  font-size: 16px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  text-align: center;
+}
+
+/* --- Card editor dùng chung --- */
+.editor-card {
+  background: var(--card);
+  border: 1px solid rgba(0,245,212,0.2);
+  border-radius: 24px;
+  padding: 28px 32px;
+  width: 100%;
+  max-width: 680px;
+  box-shadow: 0 0 40px rgba(0,245,212,0.04);
+}
+
+.editor-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: var(--neon);
+  margin-bottom: 20px;
+}
+
+/* --- Cài đặt thời gian --- */
+.time-setting {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px 20px;
+}
+
+.time-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+}
+
+.time-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 28px;
+  color: var(--gold);
+  min-width: 60px;
+  text-align: center;
+  text-shadow: var(--glow-gold);
+}
+
+.time-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-circle:hover {
+  background: rgba(0,245,212,0.15);
+  border-color: var(--neon);
+  color: var(--neon);
+}
+
+/* --- Danh sách câu hỏi --- */
+.q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.q-list::-webkit-scrollbar        { width: 4px; }
+.q-list::-webkit-scrollbar-track  { background: rgba(255,255,255,0.05); border-radius: 4px; }
+.q-list::-webkit-scrollbar-thumb  { background: var(--neon); border-radius: 4px; }
+
+.q-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.2s;
+}
+
+.q-item:hover {
+  border-color: rgba(0,245,212,0.3);
+  background: rgba(0,245,212,0.04);
+}
+
+.q-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: var(--neon);
+  background: rgba(0,245,212,0.1);
+  border-radius: 8px;
+  padding: 4px 8px;
+  min-width: 32px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.q-inputs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.q-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.q-img-input,
+.q-ans-input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.q-img-input:focus,
+.q-ans-input:focus {
+  outline: none;
+  border-color: var(--neon);
+  box-shadow: 0 0 10px rgba(0,245,212,0.15);
+}
+
+.q-img-input::placeholder,
+.q-ans-input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+/* Upload hình */
+.upload-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.file-upload-btn {
+  background: rgba(114,9,183,0.2);
+  border: 1px dashed rgba(114,9,183,0.5);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.6);
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.file-upload-btn:hover {
+  background: rgba(114,9,183,0.3);
+  color: #fff;
+}
+
+input[type="file"] { display: none; }
+
+.or-text {
+  color: rgba(255,255,255,0.25);
+  font-size: 12px;
+}
+
+.img-preview-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(0,245,212,0.4);
+  display: none;
+}
+
+/* Nút xóa câu */
+.btn-del {
+  background: rgba(255,0,110,0.1);
+  border: 1px solid rgba(255,0,110,0.3);
+  border-radius: 10px;
+  color: var(--hot);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  margin-top: 2px;
+}
+
+.btn-del:hover {
+  background: rgba(255,0,110,0.25);
+  box-shadow: var(--glow-hot);
+}
+
+.editor-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   5. SCREEN 2: GAME
+============================================================ */
+#screen-game {
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  gap: 16px;
+}
+
+/* --- Header --- */
+.game-header {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.game-logo {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 26px;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--neon), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.game-progress {
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  padding: 6px 14px;
+  margin-left: auto;
+}
+
+.game-progress span {
+  color: var(--neon);
+  font-size: 16px;
+}
+
+.btn-exit {
+  background: rgba(255,0,110,0.1);
+  border: 1px solid rgba(255,0,110,0.25);
+  color: var(--hot);
+  border-radius: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+
+.btn-exit:hover {
+  background: rgba(255,0,110,0.25);
+}
+
+/* --- Dots tiến độ --- */
+.q-dots {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.q-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.3s;
+}
+
+.q-dot.done    { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+.q-dot.current { background: var(--gold); box-shadow: 0 0 8px var(--gold); animation: pulse 1s infinite; }
+
+/* --- Thanh thời gian (Time Bar) --- */
+.timebar-wrap {
+  width: 100%;
+  max-width: 900px;
+  position: relative;
+  padding-top: 20px;
+}
+
+.timebar-label {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  color: var(--gold);
+  transition: color 0.3s;
+}
+
+.timebar-track {
+  height: 10px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.timebar-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--neon), var(--gold));
+  box-shadow: 0 0 12px rgba(0,245,212,0.5);
+  transition: width 0.1s linear, background 0.3s;
+  position: relative;
+}
+
+.timebar-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+/* Trạng thái nguy hiểm (<25%) */
+.timebar-danger .timebar-fill {
+  background: linear-gradient(90deg, var(--hot), #ff4d00);
+  box-shadow: 0 0 12px rgba(255,0,110,0.6);
+  animation: dangerPulse 0.5s ease-in-out infinite;
+}
+
+.timebar-danger .timebar-label { color: var(--hot); }
+
+/* --- Arena (ảnh + thông tin) --- */
+.game-arena {
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* --- Panel ảnh bí ẩn --- */
+.img-panel {
+  background: var(--card);
+  border: 2px solid rgba(0,245,212,0.2);
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 0 40px rgba(0,245,212,0.06);
+  transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+.img-panel.revealed {
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(255,214,10,0.2);
+  animation: revealFlash 0.6s ease;
+}
+
+.img-panel.wrong-flash {
+  animation: wrongFlash 0.4s ease;
+}
+
+.game-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 1s ease;
+}
+
+.img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(114,9,183,0.2), rgba(0,245,212,0.1));
+  flex-direction: column;
+  gap: 12px;
+  font-size: 72px;
+  transition: filter 1s ease;
+}
+
+.img-placeholder-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 2px;
+}
+
+/* Overlay đáp án */
+.reveal-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255,214,10,0.92), rgba(255,0,110,0.92));
+  transition: opacity 0.5s;
+}
+
+.reveal-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.reveal-emoji  { font-size: 48px; animation: bounce 0.6s ease-in-out 3; }
+.reveal-label  { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(3,7,30,0.6); font-weight: 700; }
+.reveal-answer {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(22px, 4vw, 46px);
+  letter-spacing: 3px;
+  color: var(--dark);
+  line-height: 1.1;
+}
+
+/* --- Panel thông tin bên phải --- */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hint-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.hint-card::before {
+  content: '💡';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 60px;
+  opacity: 0.07;
+  transform: rotate(15deg);
+}
+
+.hint-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--neon);
+  opacity: 0.7;
+  margin-bottom: 10px;
+}
+
+.hint-content {
+  font-size: 15px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+  min-height: 60px;
+}
+
+/* Điểm số */
+.score-display {
+  background: var(--card);
+  border: 1px solid rgba(255,214,10,0.2);
+  border-radius: 20px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.score-icon { font-size: 28px; }
+
+.score-info { flex: 1; }
+
+.score-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+}
+
+.score-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 26px;
+  color: var(--gold);
+  text-shadow: var(--glow-gold);
+}
+
+.bonus-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 20px;
+  color: var(--hot);
+}
+
+/* Status message */
+.status-box {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 14px 18px;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-msg {
+  font-size: 15px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* --- Blur levels (hình ảnh dần rõ) --- */
+.blur-20 { filter: blur(20px) brightness(0.6); }
+.blur-15 { filter: blur(15px) brightness(0.7); }
+.blur-10 { filter: blur(10px) brightness(0.8); }
+.blur-6  { filter: blur(6px)  brightness(0.85); }
+.blur-3  { filter: blur(3px)  brightness(0.9); }
+.blur-0  { filter: blur(0px)  brightness(1); }
+
+/* --- Điều khiển game --- */
+.game-controls {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+
+/* ============================================================
+   6. SCREEN 3: KẾT QUẢ
+============================================================ */
+#screen-results {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  gap: 24px;
+}
+
+.result-trophy {
+  font-size: 100px;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.result-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(40px, 8vw, 80px);
+  letter-spacing: 4px;
+  background: linear-gradient(135deg, var(--gold), var(--hot));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.result-subtitle {
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 20px 12px;
+}
+
+.stat-val {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 42px;
+  color: var(--neon);
+  text-shadow: var(--glow);
+}
+
+.stat-lab {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+}
+
+.result-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+/* ============================================================
+   7. COMPONENTS DÙNG CHUNG
+============================================================ */
+
+/* --- Buttons --- */
+.btn {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 16px;
+  letter-spacing: 2px;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btn:hover::after { opacity: 1; }
+.btn:hover        { transform: translateY(-2px); }
+
+.btn-neon {
+  background: var(--neon);
+  color: var(--dark);
+  box-shadow: var(--glow);
+}
+.btn-neon:hover { box-shadow: 0 0 30px var(--neon), 0 0 60px rgba(0,245,212,0.3); }
+
+.btn-hot {
+  background: var(--hot);
+  color: #fff;
+  box-shadow: var(--glow-hot);
+}
+.btn-hot:hover { box-shadow: 0 0 30px var(--hot); }
+
+.btn-ghost {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+.btn-gold {
+  background: var(--gold);
+  color: var(--dark);
+  box-shadow: var(--glow-gold);
+  font-size: 22px;
+  padding: 16px 56px;
+}
+.btn-gold:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 40px var(--gold); }
+
+.btn-reveal {
+  background: linear-gradient(135deg, var(--purple), var(--hot));
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 20px rgba(114,9,183,0.4);
+}
+.btn-reveal:hover { box-shadow: 0 0 30px rgba(114,9,183,0.6); }
+
+/* --- Toast --- */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--card);
+  border: 1px solid var(--neon);
+  border-radius: 16px;
+  padding: 14px 28px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--neon);
+  box-shadow: var(--glow);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 999;
+  white-space: nowrap;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* --- Confetti --- */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+
+
+/* ============================================================
+   8. ANIMATIONS & KEYFRAMES
+============================================================ */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%       { transform: translateY(-15px) rotate(5deg); }
+}
+
+@keyframes logoFlicker {
+  0%, 95%, 100% { opacity: 1; }
+  96%            { opacity: 0.8; }
+  97%            { opacity: 1; }
+  98%            { opacity: 0.7; }
+  99%            { opacity: 1; }
+}
+
+@keyframes dangerPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+@keyframes revealFlash {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wrongFlash {
+  0%, 100% { border-color: rgba(0,245,212,0.2); box-shadow: 0 0 40px rgba(0,245,212,0.06); }
+  50%       { border-color: var(--hot);          box-shadow: 0 0 40px rgba(255,0,110,0.3); }
+}
+
+@keyframes confettiFall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+
+/* ============================================================
+   9. RESPONSIVE
+============================================================ */
+@media (max-width: 700px) {
+  .game-arena { grid-template-columns: 1fr; }
+  .game-progress { margin-left: 0; }
+}
+
+@media (max-width: 480px) {
+  #screen-home    { padding: 28px 16px; gap: 20px; }
+  .editor-card    { padding: 20px; }
+  .result-stats   { gap: 10px; }
+  .game-controls  { gap: 8px; }
+  .btn            { font-size: 14px; padding: 10px 16px; }
+  .btn-gold       { font-size: 18px; padding: 14px 36px; }
+}
+
+/* ============================================================
+   10. NEW FEATURES: COMBO, LEVEL, TOPIC, LEADERBOARD
+============================================================ */
+/* Cấp độ / Level Info (Screen 1) */
+.level-info-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; background: rgba(0,245,212,0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(0,245,212,0.2); }
+.level-badge { font-family: 'Space Mono', monospace; font-size: 12px; background: var(--neon); color: var(--dark); padding: 4px 10px; border-radius: 8px; font-weight: bold; }
+.level-desc { font-size: 14px; color: rgba(255,255,255,0.8); }
+
+/* Chủ đề / Topics (Screen 1) */
+.topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top:16px;}
+.topic-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
+.topic-card:hover { background: rgba(0,245,212,0.1); border-color: var(--neon); transform: translateY(-2px); box-shadow: var(--glow); }
+.topic-emoji { font-size: 32px; margin-bottom: 8px; }
+.topic-name { font-weight: bold; font-size: 15px; color: #fff; margin-bottom: 4px; }
+.topic-count { font-size: 12px; color: rgba(255,255,255,0.5); }
+.q-count-badge { font-size: 12px; background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 8px; margin-left: 8px; font-family: 'Space Mono', monospace; color:var(--gold);}
+
+/* Game Meta Strip (Level, Combo, Player) */
+.game-meta-strip { width: 100%; max-width: 900px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 12px; margin-top: -10px; flex-wrap: wrap; gap: 10px; }
+.meta-item { display: flex; align-items: center; gap: 8px; font-family: 'Space Mono', monospace; font-size: 14px; color: #fff; }
+.combo-item { color: var(--hot); font-weight: bold; }
+.combo-count { font-size: 18px; color: var(--gold); text-shadow: var(--glow-gold); transition: transform 0.2s; }
+.combo-anim { animation: comboPop 0.4s ease-out; }
+@keyframes comboPop { 0% { transform: scale(1); } 50% { transform: scale(1.5); color: #fff; } 100% { transform: scale(1); } }
+
+/* Leaderboard Screen */
+#screen-leaderboard { padding: 40px 20px; align-items: center; justify-content: flex-start; }
+.lb-header { text-align: center; margin-bottom: 24px; }
+.lb-title { font-family: 'Bebas Neue', cursive; font-size: 48px; color: var(--gold); text-shadow: var(--glow-gold); letter-spacing: 3px; }
+.lb-sub { font-size: 16px; color: rgba(255,255,255,0.6); }
+.lb-filters { display: flex; gap: 12px; margin-bottom: 24px; }
+.lb-filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 8px 16px; border-radius: 20px; cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.2s; }
+.lb-filter-btn.active { background: var(--neon); color: var(--dark); font-weight: bold; box-shadow: var(--glow); }
+.lb-table-wrap { width: 100%; max-width: 800px; background: var(--card); border-radius: 20px; border: 1px solid rgba(0,245,212,0.2); overflow: hidden; padding: 20px; box-shadow: 0 0 40px rgba(0,245,212,0.05); }
+.lb-table { width: 100%; border-collapse: collapse; text-align: left; }
+.lb-table th { font-family: 'Space Mono', monospace; font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.lb-table td { padding: 16px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
+.lb-table tr:last-child td { border-bottom: none; }
+.lb-table tr:hover { background: rgba(255,255,255,0.02); }
+.lb-table td:nth-child(1) { font-family: 'Bebas Neue', cursive; font-size: 24px; color: var(--neon); width: 50px; text-align: center; }
+.lb-table td:nth-child(3) { font-family: 'Space Mono', monospace; color: var(--gold); font-size: 18px; font-weight: bold; }
+.lb-empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); font-style: italic; }
+.lb-actions { display: flex; gap: 16px; margin-top: 30px; }
+
+/* Rank Badge */
+.rank-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 12px; font-family: 'Space Mono', monospace; font-weight: bold; margin-left: 8px; }
+.rank-1 { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; box-shadow: 0 0 10px rgba(255,215,0,0.5); }
+.rank-2 { background: linear-gradient(135deg, #e0e0e0, #9e9e9e); color: #000; }
+.rank-3 { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
+
+.rank-badge-result { margin-top: -10px; margin-bottom: 20px; font-family: 'Space Mono', monospace; font-size: 16px; color: var(--neon); text-shadow: var(--glow); }
+
+@media (max-width: 600px) {
+  .game-meta-strip { flex-direction: column; align-items: flex-start; }
+  .lb-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .mcq-grid { grid-template-columns: 1fr !important; }
+}
+
+/* MCQ Buttons */
+.mcq-grid {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-mcq {
+  background: var(--card);
+  border: 2px solid rgba(255,255,255,0.1);
+  color: #fff;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  text-align: left;
+}
+
+.btn-mcq:hover {
+  border-color: var(--neon);
+  background: rgba(0,245,212,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0,245,212,0.2);
+}
+
+.mcq-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.1);
+  color: var(--gold);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  margin-right: 14px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.btn-mcq.correct {
+  background: rgba(0,245,212,0.15);
+  border-color: var(--neon);
+  box-shadow: 0 0 30px rgba(0,245,212,0.4);
+}
+
+.btn-mcq.wrong {
+  background: rgba(255,0,110,0.15);
+  border-color: var(--hot);
+  box-shadow: 0 0 30px rgba(255,0,110,0.4);
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
