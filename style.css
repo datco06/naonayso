@@ -540,6 +540,11 @@ input[type="file"] { display: none; }
   gap: 20px;
 }
 
+/* Dạng nhập tự do: ảnh chiếm 3/5, panel phải chiếm 2/5 */
+.game-arena.input-mode {
+  grid-template-columns: 3fr 2fr;
+}
+
 /* --- Panel ảnh bí ẩn --- */
 .img-panel {
   background: var(--card);
@@ -550,6 +555,12 @@ input[type="file"] { display: none; }
   aspect-ratio: 4 / 3;
   box-shadow: 0 0 40px rgba(0,245,212,0.06);
   transition: border-color 0.4s, box-shadow 0.4s;
+}
+
+/* Bỏ aspect-ratio cố định khi input-mode để ảnh tự co giãn đầy đủ */
+.game-arena.input-mode .img-panel {
+  aspect-ratio: unset;
+  min-height: 320px;
 }
 
 .img-panel.revealed {
@@ -568,6 +579,12 @@ input[type="file"] { display: none; }
   object-fit: cover;
   display: block;
   transition: filter 1s ease;
+}
+
+/* Câu dạng nhập: thu nhỏ ảnh vừa khung, không cắt xén */
+.game-arena.input-mode .game-img {
+  object-fit: contain;
+  background: rgba(255,255,255,0.04);
 }
 
 .img-placeholder {
@@ -1095,4 +1112,79 @@ input[type="file"] { display: none; }
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-5px); }
   75% { transform: translateX(5px); }
+}
+
+/* ============================================================
+   INPUT ANSWER (Câu hỏi dạng nhập tự do - câu 10-13)
+============================================================ */
+.input-answer-wrap {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.input-answer-field {
+  flex: 1;
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(0,245,212,0.4);
+  border-radius: 14px;
+  padding: 16px 20px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+  box-shadow: 0 0 12px rgba(0,245,212,0.1);
+}
+
+.input-answer-field::placeholder {
+  color: rgba(255,255,255,0.3);
+  font-weight: 400;
+}
+
+.input-answer-field:focus {
+  border-color: var(--neon);
+  background: rgba(0,245,212,0.06);
+  box-shadow: 0 0 24px rgba(0,245,212,0.25);
+}
+
+.input-answer-field:disabled {
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+.btn-submit-answer {
+  background: linear-gradient(135deg, var(--neon), #00c4aa);
+  border: none;
+  border-radius: 14px;
+  padding: 16px 24px;
+  color: var(--dark);
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  box-shadow: 0 0 20px rgba(0,245,212,0.3);
+  flex-shrink: 0;
+}
+
+.btn-submit-answer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0,245,212,0.5);
+}
+
+.btn-submit-answer:active {
+  transform: translateY(0);
+}
+
+.btn-submit-answer:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }

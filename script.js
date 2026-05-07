@@ -46,7 +46,19 @@ const TOPICS = [
       { img: 'img/6.png', answer: 'MẬT MÃ', hint: 'Gợi ý: Đồ ngọt và động vật', emoji: '🍯', wrongs: 'MÃ MẬT, ONG NGỰA' },
       { img: 'img/7.png', answer: 'NEO ĐƠN', hint: 'Gợi ý: Tàu thuyền và giấy tờ', emoji: '⚓', wrongs: 'ĐƠN NEO, TÀU ĐƠN' },
       { img: 'img/8.png', answer: 'KHẨU CUNG', hint: 'Gợi ý: Bộ phận cơ thể và vũ khí', emoji: '👄', wrongs: 'CUNG KHẨU, MIỆNG BẮN' },
-      { img: 'img/9.png', answer: 'GIẤY BẠC', hint: 'Gợi ý: Vật liệu và kim loại', emoji: '🧻', wrongs: 'BẠC GIẤY, TIỀN GIẤY' }
+      { img: 'img/9.png', answer: 'GIẤY BẠC', hint: 'Gợi ý: Vật liệu và kim loại', emoji: '🧻', wrongs: 'BẠC GIẤY, TIỀN GIẤY' },
+      { img: 'img/10.png', answer: 'RỒNG RẮN LÊN MÂY', hint: 'Gợi ý: Trò chơi dân gian', emoji: '🐍', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/11.png', answer: 'KÉO CO', hint: 'Gợi ý: Trò chơi tập thể', emoji: '🪢', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/12.png', answer: 'Ô ĂN QUAN', hint: 'Gợi ý: Trò chơi dân gian với ô và hạt', emoji: '🔵', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/13.png', answer: 'MẤY ĐỜI BÁNH ĐÚC CÓ XƯƠNG', hint: 'Gợi ý: Tục ngữ dân gian', emoji: '📜', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/14.png', answer: 'HỘT VỊT LỘN', hint: 'Gợi ý: Món ăn dân dã từ trứng', emoji: '🥚', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/15.png', answer: 'CHÂN GÀ SỐT THÁI', hint: 'Gợi ý: Món ăn vặt cay chua ngọt', emoji: '🍗', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/16.png', answer: 'THỊT KHO TÀU', hint: 'Gợi ý: Món kho đậm đà truyền thống', emoji: '🥩', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/17.png', answer: 'XOÀI SẤY DẺO', hint: 'Gợi ý: Đặc sản trái cây sấy', emoji: '🥭', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/18.png', answer: 'BÔNG LAN TRỨNG MUỐI', hint: 'Gợi ý: Bánh ngọt thơm béo mặn', emoji: '🎂', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/19.png', answer: 'NỘM ĐU ĐỦ', hint: 'Gợi ý: Món trộn chua cay từ trái cây', emoji: '🥗', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/20.png', answer: 'BÁNH GIÒ', hint: 'Gợi ý: Bánh gói lá, nhân thịt', emoji: '🫔', wrongs: '', type: 'input', time: 60 },
+      { img: 'img/21.png', answer: 'CƠM LAM', hint: 'Gợi ý: Cơm nấu trong ống tre', emoji: '🎋', wrongs: '', type: 'input', time: 60 }
     ]
   },
   {
@@ -351,7 +363,8 @@ function startGame() {
 
 function calculateCurrentLevelTime() {
   gameLevel = Math.floor(currentQ / 3) + 1;
-  currentLevelTime = 30;
+  const q = questions[currentQ];
+  currentLevelTime = (q && q.time) ? q.time : 30;
   
   document.getElementById('gameLevelLabel').textContent = `CẤP ${gameLevel}`;
   return currentLevelTime;
@@ -394,10 +407,82 @@ function loadQuestion() {
     placeholder.innerHTML = `<span style="font-size:80px">${q.emoji || '🧠'}</span><span class="img-placeholder-text">ĐOÁN TỪ KHÓA</span>`;
   }
 
-  generateMCQOptions(q);
-
-  setStatus('⏳ Hãy chọn đáp án đúng!', 'rgba(255,255,255,0.6)');
+  if (q.type === 'input') {
+    document.querySelector('.game-arena').classList.add('input-mode');
+    generateInputBox(q);
+    setStatus('⌨️ Nhập đáp án và nhấn Enter!', 'rgba(255,255,255,0.6)');
+  } else {
+    document.querySelector('.game-arena').classList.remove('input-mode');
+    generateMCQOptions(q);
+    setStatus('⏳ Hãy chọn đáp án đúng!', 'rgba(255,255,255,0.6)');
+  }
   startTimer();
+}
+
+/* ---- Dạng nhập đáp án tự do ---- */
+function normalizeAnswer(str) {
+  return str
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, ' ');
+}
+
+function generateInputBox(q) {
+  const mcqGrid = document.getElementById('mcqGrid');
+  if (!mcqGrid) return;
+  mcqGrid.innerHTML = `
+    <div class="input-answer-wrap" id="inputAnswerWrap">
+      <input
+        class="input-answer-field"
+        id="answerInput"
+        type="text"
+        placeholder="Nhập đáp án..."
+        autocomplete="off"
+        autofocus
+        onkeydown="handleInputKey(event)"
+      />
+      <button class="btn-submit-answer" id="btnSubmitAnswer" onclick="checkInput()">
+        ✅ Xác nhận
+      </button>
+    </div>
+  `;
+  mcqGrid.style.pointerEvents = 'auto';
+  setTimeout(() => { const inp = document.getElementById('answerInput'); if(inp) inp.focus(); }, 100);
+}
+
+function handleInputKey(e) {
+  if (e.key === 'Enter') checkInput();
+}
+
+function checkInput() {
+  if (revealed) return;
+  const inp = document.getElementById('answerInput');
+  if (!inp) return;
+  const userVal = inp.value;
+  const q = questions[currentQ];
+  const isCorrect = normalizeAnswer(userVal) === normalizeAnswer(q.answer);
+
+  // Vô hiệu hóa input
+  inp.disabled = true;
+  const btn = document.getElementById('btnSubmitAnswer');
+  if (btn) btn.disabled = true;
+
+  if (isCorrect) {
+    inp.style.borderColor = 'var(--neon)';
+    inp.style.color = 'var(--neon)';
+    markCorrect(true);
+  } else {
+    inp.style.borderColor = 'var(--hot)';
+    inp.style.color = 'var(--hot)';
+    markWrong(true);
+  }
+
+  triggerReveal(isCorrect ? '🎉' : '❌');
+  setTimeout(() => nextQuestion(), 2500);
 }
 
 function generateMCQOptions(q) {
