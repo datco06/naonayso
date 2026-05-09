@@ -29,6 +29,10 @@ let maxCombo     = 0;
 let gameLevel    = 1;
 let currentLevelTime = 30;
 
+// Hint system
+let hintsAvailable = 0;  // số gợi ý hiện có
+let hintUsed       = false; // đã dùng gợi ý câu này chưa
+
 /* ============================================================
    2. DỮ LIỆU (Topics & Questions)
 ============================================================ */
@@ -346,15 +350,18 @@ function startGame() {
   playerName = nameInput || "Người chơi Ẩn Danh";
   document.getElementById('gamePlayerName').textContent = playerName;
 
-  currentQ     = 0;
-  score        = 0;
-  correctCount = 0;
-  currentCombo = 0;
-  maxCombo     = 0;
+  currentQ       = 0;
+  score          = 0;
+  correctCount   = 0;
+  currentCombo   = 0;
+  maxCombo       = 0;
+  hintsAvailable = 0;
+  hintUsed       = false;
 
   document.getElementById('scoreVal').textContent = '0';
   document.getElementById('bonusVal').textContent = '+0';
   updateComboUI();
+  updateHintUI();
 
   showScreen('game');
   setupDots();
@@ -377,8 +384,17 @@ function setupDots() {
 }
 
 function loadQuestion() {
-  revealed = false;
+  revealed  = false;
+  hintUsed  = false;
   const q = questions[currentQ];
+
+  // Ẩn/reset hint box
+  const hintBox = document.getElementById('hintBox');
+  if (hintBox) {
+    hintBox.classList.remove('visible');
+    hintBox.querySelector('.hint-text').textContent = '';
+  }
+  updateHintUI();
 
   calculateCurrentLevelTime();
 
@@ -658,6 +674,13 @@ function markCorrect(fromMCQ = false) {
   
   currentCombo++;
   updateComboUI();
+
+  // Tặng gợi ý mỗi 4 lần đúng liên tiếp
+  if (currentCombo % 4 === 0) {
+    hintsAvailable++;
+    updateHintUI();
+    showToast(`💡 Chúc mừng! Bạn nhận được 1 gợi ý! (Còn: ${hintsAvailable})`);
+  }
   
   const bonus = calcBonus(pct);
   score += bonus;
@@ -685,6 +708,46 @@ function markWrong(fromMCQ = false) {
 
   setStatus('❌ Sai rồi! Mất Combo. Chuyển sang câu tiếp theo...', 'var(--hot)');
   clearBlur();
+}
+
+function useHint() {
+  if (hintsAvailable <= 0) {
+    showToast('❗ Bạn chưa có gợi ý! Đúng 4 lần liên tiếp để nhận gợi ý.');
+    return;
+  }
+  if (hintUsed) {
+    showToast('💡 Đã dùng gợi ý cho câu này rồi!');
+    return;
+  }
+  if (revealed) return;
+
+  hintUsed = true;
+  hintsAvailable--;
+  updateHintUI();
+
+  const q = questions[currentQ];
+  const hintBox = document.getElementById('hintBox');
+  const hintText = document.getElementById('hintText');
+  if (hintBox && hintText) {
+    hintText.textContent = q.hint || 'Không có gợi ý cho câu này.';
+    hintBox.classList.add('visible');
+  }
+}
+
+function updateHintUI() {
+  const btn = document.getElementById('btnHint');
+  const badge = document.getElementById('hintBadge');
+  if (!btn || !badge) return;
+
+  badge.textContent = hintsAvailable;
+
+  if (hintsAvailable > 0 && !revealed) {
+    btn.classList.remove('hint-disabled');
+    btn.classList.add('hint-ready');
+  } else {
+    btn.classList.remove('hint-ready');
+    btn.classList.add('hint-disabled');
+  }
 }
 
 function triggerReveal(emoji) {
@@ -756,15 +819,18 @@ function endGame() {
 }
 
 function restartGame() {
-  currentQ = 0;
-  score = 0;
-  correctCount = 0;
-  currentCombo = 0;
-  maxCombo = 0;
+  currentQ      = 0;
+  score         = 0;
+  correctCount  = 0;
+  currentCombo  = 0;
+  maxCombo      = 0;
+  hintsAvailable = 0;
+  hintUsed      = false;
 
   document.getElementById('scoreVal').textContent = '0';
   document.getElementById('bonusVal').textContent = '+0';
   updateComboUI();
+  updateHintUI();
 
   showScreen('game');
   setupDots();
