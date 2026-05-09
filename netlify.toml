@@ -1,0 +1,31 @@
+[build]
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Không cần build step vì là static HTML
+# Netlify sẽ serve thư mục gốc
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Cache-Control          = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/style.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/script.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

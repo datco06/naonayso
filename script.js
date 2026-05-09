@@ -246,53 +246,70 @@ function updateLevelInfo() {
 }
 
 /* ============================================================
-   4. LEADERBOARD LOGIC
+   4. LEADERBOARD LOGIC (Supabase)
 ============================================================ */
+
+// Khởi tạo Supabase client (dùng biến từ supabase-config.js)
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 let leaderboardData = [];
-const API_URL = 'https://jsonblob.com/api/jsonBlob/019dfc7b-3856-70d7-b4f2-86a4fd215e1a';
 
 async function loadLeaderboardData() {
   try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    if (data && data.leaderboard) {
-      leaderboardData = data.leaderboard;
-    }
+    const { data, error } = await db
+      .from('leaderboard')
+      .select('*')
+      .order('score', { ascending: false })
+      .limit(200);
+
+    if (error) throw error;
+    leaderboardData = data || [];
   } catch (err) {
-    console.error("Failed to load global leaderboard", err);
+    console.error('Supabase load error:', err);
+    leaderboardData = [];
   }
 }
 
-async function saveLeaderboardData() {
+async function saveLeaderboardData(entry) {
   try {
-    await fetch(API_URL, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ leaderboard: leaderboardData })
-    });
+    const { error } = await db
+      .from('leaderboard')
+      .insert([{
+        name:      entry.name,
+        score:     entry.score,
+        correct:   entry.correct,
+        total:     entry.total,
+        max_combo: entry.maxCombo,
+        date:      entry.date
+      }]);
+
+    if (error) throw error;
   } catch (err) {
-    console.error("Failed to save global leaderboard", err);
+    console.error('Supabase save error:', err);
   }
 }
 
 async function filterLeaderboard(filter) {
   document.querySelectorAll('.lb-filter-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(filter === 'all' ? 'filterAll' : filter === 'today' ? 'filterToday' : 'filterWeek').classList.add('active');
-  
+
   await loadLeaderboardData();
+
   const now = new Date();
   let filtered = leaderboardData.filter(entry => {
     const d = new Date(entry.date);
     if (filter === 'today') {
       return d.toDateString() === now.toDateString();
     } else if (filter === 'week') {
-      const diffTime = Math.abs(now - d);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      const diffDays = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
       return diffDays <= 7;
     }
     return true;
   });
 
+  // max_combo field từ Supabase -> chuyển về maxCombo cho render
+  filtered = filtered.map(e => ({ ...e, maxCombo: e.maxCombo ?? e.max_combo ?? 0 }));
   filtered.sort((a, b) => b.score - a.score || b.maxCombo - a.maxCombo);
   renderLeaderboardTable(filtered);
 }
@@ -785,19 +802,17 @@ function endGame() {
   document.getElementById('rCorrect').textContent = correctCount;
   document.getElementById('rScore').textContent = score;
   document.getElementById('rMaxCombo').textContent = maxCombo;
-  // Auto-save to leaderboard
+  // Auto-save to Supabase
   if (score > 0 || correctCount > 0) {
-    loadLeaderboardData().then(() => {
-      leaderboardData.push({
-        name: playerName,
-        score: score,
-        correct: correctCount,
-        total: questions.length,
-        maxCombo: maxCombo,
-        date: new Date().toISOString()
-      });
-      saveLeaderboardData();
-    });
+    const entry = {
+      name:     playerName,
+      score:    score,
+      correct:  correctCount,
+      total:    questions.length,
+      maxCombo: maxCombo,
+      date:     new Date().toISOString()
+    };
+    saveLeaderboardData(entry);
   }
   const pct = Math.round((correctCount / questions.length) * 100);
   const msgs = [
