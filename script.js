@@ -361,7 +361,13 @@ function startGame() {
     showToast('❗ Cần ít nhất 1 câu có đáp án!');
     return;
   }
-  questions = valid;
+  // Xáo trộn câu hỏi ngẫu nhiên cho mỗi người chơi (Fisher-Yates shuffle)
+  const shuffled = [...valid];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  questions = shuffled;
 
   const nameInput = document.getElementById('playerNameInput').value.trim();
   playerName = nameInput || "Người chơi Ẩn Danh";
